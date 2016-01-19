@@ -47,7 +47,7 @@ public class Rozkaz implements Serializable{
                 }
                 break;
             default:
-                showMessageDialog(null, "Nie znaleziono polecenia w poleceniu " + numerPolecenia );
+                showMessageDialog(null, "Błąd  w poleceniu " + numerPolecenia );
         }
     }
 
@@ -59,14 +59,17 @@ public class Rozkaz implements Serializable{
             pierwszyCzlon = tab[0].trim();
             String reszta = tab[1];
 
-            String tab2[];
-            tab2 = reszta.split(",", 2);
-            drugiCzlon = tab2[0].trim();
-            trzeciCzlon = tab2[1].trim();
-
-            if(drugiCzlon.equals("READ")||drugiCzlon.equals("WRITE"))
+            if(pierwszyCzlon.equals("READ")||pierwszyCzlon.equals("WRITE"))
             {
+                drugiCzlon = reszta;
                 trzeciCzlon = "";
+            }
+            else
+            {
+                String tab2[];
+                tab2 = reszta.split(",", 2);
+                drugiCzlon = tab2[0].trim();
+                trzeciCzlon = tab2[1].trim();
             }
 
         }

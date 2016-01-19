@@ -149,6 +149,11 @@ public class Okno extends JFrame implements Serializable {
         {
             r[numerPolecenia].wykonajRozkaz();
             numerPolecenia++;
+            System.out.println("numer polecenia wynosi " + numerPolecenia + "/" + r.length);
+            if (numerPolecenia == r.length)
+            {
+                nastepnyKrok.setEnabled(false);
+            }
         }
     }
 
