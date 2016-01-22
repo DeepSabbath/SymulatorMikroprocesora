@@ -161,8 +161,17 @@ public class Okno extends JFrame implements Serializable {
     {
         String rozkazy[];
         rozkazy = polecenie.getText().split(";");
-        r = new Rozkaz[rozkazy.length];
+        int puste = 0;
+        for (int i = 0; i < rozkazy.length; i++)
+        {
+            if ((rozkazy[i].trim()).equals(""))
+            {
+                puste++;
+            }
+        }
+        r = new Rozkaz[rozkazy.length-puste];
         int i = 0;
+
         for(String zadania : rozkazy) {
             if (!(rozkazy[i].trim()).equals(""))
             {
@@ -174,6 +183,7 @@ public class Okno extends JFrame implements Serializable {
                     System.out.println("bal bla " + zadania.charAt(zadania.length() - 1));
                 }
             }
+            else System.out.println("Tutaj ");
             i++;
         }
     }

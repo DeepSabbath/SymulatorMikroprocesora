@@ -1,6 +1,7 @@
 import java.io.*;
 import java.io.Serializable;
 
+import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 
 /**
@@ -11,6 +12,8 @@ public class Rozkaz implements Serializable{
     String rozkaz;
     String pierwszyCzlon, drugiCzlon, trzeciCzlon;
     int numerPolecenia;
+    int stos [] = new int [16];
+    short wskaznikStosu = 0;
 
     Rozkaz(String rozkaz, int numerPolecenia)
     {
@@ -46,22 +49,59 @@ public class Rozkaz implements Serializable{
                     e.printStackTrace();
                 }
                 break;
+            case "PUSH" :
+                pchnijNaStos();
+                break;
+            case "INT" :
+            {
+                wykonajPrzerwanie();
+            }
+            break;
             default:
                 showMessageDialog(null, "Błąd  w poleceniu " + numerPolecenia );
         }
     }
 
+    public void wykonajPrzerwanie()
+    {
+        switch (drugiCzlon)
+        {
+            case "1":
+                Przerwanie.otworzZdjecie();
+                break;
+
+            case "2":
+                Przerwanie.otworzInternet();
+                break;
+
+            case "3":
+                Przerwanie.ustawKursor();
+                break;
+
+            // mają być różnorodne więc możesz dopisać coś w stylu odtwórz dźwięk, wyświetl dane procesora ii łącznie ma być takich 10
+
+        }
+
+    }
+
+    public void pchnijNaStos()
+    {
+
+    }
+
     public void podzial(String rozkaz)
     {
         String tab[];
+
         try {
+
             tab = rozkaz.split(" ", 2);
             pierwszyCzlon = tab[0].trim();
             String reszta = tab[1];
 
-            if(pierwszyCzlon.equals("READ")||pierwszyCzlon.equals("WRITE"))
+            if(pierwszyCzlon.equals("READ")||pierwszyCzlon.equals("WRITE")||pierwszyCzlon.equals("INT"))
             {
-                drugiCzlon = reszta;
+                drugiCzlon = reszta.trim();
                 trzeciCzlon = "";
             }
             else
@@ -166,21 +206,39 @@ public class Rozkaz implements Serializable{
     public void odejmij ()
     {
         int roznica = odczytajDrugiCzlon() - odczytajTrzeciCzlon();
-        Rejestr.walidacjaWyniku(roznica);
+
+        String zawartoscRejestru;
+
+        if (Rejestr.walidacjaWyniku(roznica))
+        {
+            zawartoscRejestru = Rejestr.intNaRejestr(roznica);
+        }
+        else
+        {
+            zawartoscRejestru = "0";
+        }
+
         //System.out.println("Różnica wynosi: " + roznica);
-        String zawartoscRejestru = Rejestr.intNaRejestr(roznica);
+
 
         zawartoscRejestru = dopiszZera(zawartoscRejestru);
-
         zapiszWartoscDoRejestru(zawartoscRejestru);
     }
 
     public void dodaj()
     {
         int suma = odczytajDrugiCzlon() + odczytajTrzeciCzlon();
-        Rejestr.walidacjaWyniku(suma);
         //System.out.println("Suma wynosi: " + suma);
-        String zawartoscRejestru = Rejestr.intNaRejestr(suma);
+        String zawartoscRejestru;
+
+        if (Rejestr.walidacjaWyniku(suma))
+        {
+            zawartoscRejestru = Rejestr.intNaRejestr(suma);
+        }
+        else
+        {
+            zawartoscRejestru = "1111111111111111";
+        }
 
         zawartoscRejestru = dopiszZera(zawartoscRejestru);
 

@@ -9,7 +9,7 @@ public class Rejestr {
     {
         int czL = Integer.parseInt(mlodsza, 2);
         int czH = Integer.parseInt(starsza, 2) << 8;
-        System.out.println("czesci " + czH + " " + czL);
+        // System.out.println("czesci " + czH + " " + czL);
         int suma = czL + czH;
         return suma;
     }
