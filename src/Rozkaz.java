@@ -12,8 +12,7 @@ public class Rozkaz implements Serializable{
     String rozkaz;
     String pierwszyCzlon, drugiCzlon, trzeciCzlon;
     int numerPolecenia;
-    int stos [] = new int [16];
-    short wskaznikStosu = 0;
+
 
     Rozkaz(String rozkaz, int numerPolecenia)
     {
@@ -52,6 +51,9 @@ public class Rozkaz implements Serializable{
             case "PUSH" :
                 pchnijNaStos();
                 break;
+            case "POP" :
+                zdejmijZeStosu();
+                break;
             case "INT" :
             {
                 wykonajPrzerwanie();
@@ -64,29 +66,92 @@ public class Rozkaz implements Serializable{
 
     public void wykonajPrzerwanie()
     {
+        String zawartoscRejestru;
         switch (drugiCzlon)
         {
             case "1":
+                drugiCzlon = "AX";
+                pchnijNaStos();
                 Przerwanie.otworzZdjecie();
+                zawartoscRejestru = Rejestr.intNaRejestr(1);
+                zawartoscRejestru = dopiszZera(zawartoscRejestru);
+                zapiszWartoscDoRejestru(zawartoscRejestru);
+                zdejmijZeStosu();
                 break;
-
             case "2":
                 Przerwanie.otworzInternet();
                 break;
-
             case "3":
                 Przerwanie.ustawKursor();
                 break;
-
-            // mają być różnorodne więc możesz dopisać coś w stylu odtwórz dźwięk, wyświetl dane procesora ii łącznie ma być takich 10
-
+            case "4":
+                Przerwanie.otworzCMD();
+                break;
+            case "5":
+                Przerwanie.podajIP();
+                break;
+            case "6":
+                Przerwanie.grajDzwiek();
+                break;
+            case "7":
+                Przerwanie.zmienTlo();
+                break;
+            case "8":
+                Przerwanie.wycentrujOkno();
+                break;
+            case "9":
+                Przerwanie.podajDateICzas();
+                break;
+            case "10":
+                Przerwanie.zminimalizujOkno();
+                break;
         }
 
     }
 
+    public void zdejmijZeStosu()
+    {
+        System.out.println("A to nie " + Przerwanie.SP + " o wartosci " + Przerwanie.stos[Przerwanie.SP]);
+        Przerwanie.SP--;
+        System.out.println("Chcę zapisać SP " + Przerwanie.SP + " o wartosci " + Przerwanie.stos[Przerwanie.SP]);
+        String zawartoscRejestru = Rejestr.intNaRejestr(Przerwanie.stos[Przerwanie.SP]);
+        zawartoscRejestru = dopiszZera(zawartoscRejestru);
+
+        zapiszWartoscDoRejestru(zawartoscRejestru);
+    }
+
     public void pchnijNaStos()
     {
+        String starsza = "";
+        String mlodsza = "";
 
+        switch(drugiCzlon)
+        {
+            case "AX" :
+                starsza = Okno.rejestrA[0].getText();
+                mlodsza = Okno.rejestrA[1].getText();
+                break;
+            case "BX" :
+                starsza = Okno.rejestrB[0].getText();
+                mlodsza = Okno.rejestrB[1].getText();
+                break;
+            case "CX" :
+                starsza = Okno.rejestrC[0].getText();
+                mlodsza = Okno.rejestrC[1].getText();
+                break;
+            case "DX" :
+                starsza = Okno.rejestrD[0].getText();
+                mlodsza = Okno.rejestrD[1].getText();
+                break;
+            default:
+                showMessageDialog(null, "Podano niepoprawny rejestr w trzecim członie rozkazu w poleceniu " + numerPolecenia);
+        }
+
+        short zawartosc =(short)Rejestr.rejestrNaInt(starsza,mlodsza);
+        Przerwanie.stos[Przerwanie.SP] = zawartosc;
+        System.out.println("na pozycji " + Przerwanie.SP + " mamy " + Przerwanie.stos[Przerwanie.SP]);
+        Przerwanie.SP++;
+        System.out.println("na pozycji " + Przerwanie.SP + " mamy " + Przerwanie.stos[Przerwanie.SP]);
     }
 
     public void podzial(String rozkaz)
@@ -99,7 +164,7 @@ public class Rozkaz implements Serializable{
             pierwszyCzlon = tab[0].trim();
             String reszta = tab[1];
 
-            if(pierwszyCzlon.equals("READ")||pierwszyCzlon.equals("WRITE")||pierwszyCzlon.equals("INT"))
+            if(pierwszyCzlon.equals("READ")||pierwszyCzlon.equals("WRITE")||pierwszyCzlon.equals("INT")||pierwszyCzlon.equals("PUSH")||pierwszyCzlon.equals("POP"))
             {
                 drugiCzlon = reszta.trim();
                 trzeciCzlon = "";

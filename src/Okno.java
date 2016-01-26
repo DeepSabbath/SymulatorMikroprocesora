@@ -17,8 +17,10 @@ public class Okno extends JFrame implements Serializable {
     JButton nastepnyKrok;
     public static final int Szerokosc = 800;
     public static final int Wyskoosc = 600;
+    public static JLabel wynikPrzerwania;
     public static Rozkaz r[];
     int numerPolecenia = 0;
+    public static Okno o;
 
 
     public Okno ()
@@ -34,7 +36,7 @@ public class Okno extends JFrame implements Serializable {
 
     public static void main(String[] args)
     {
-        Okno o = new Okno();
+        o = new Okno();
         o.setDefaultCloseOperation(o.EXIT_ON_CLOSE);
     }
 
@@ -66,6 +68,10 @@ public class Okno extends JFrame implements Serializable {
         JLabel czMlodsza = new JLabel("część młodsza");
         czMlodsza.setBounds(650,100,100,20);
         add(czMlodsza);
+
+        wynikPrzerwania = new JLabel();
+        wynikPrzerwania.setBounds(200,25,150,20);
+        add(wynikPrzerwania);
 
         for (int i = 0; i <30; i++)
         {
